@@ -25,6 +25,7 @@ app.use(express.json())
 app.use(clerkMiddleware())
 
 
+
 //Routes
 app.get('/', (req,res)=> res.send("API Working"))
 
