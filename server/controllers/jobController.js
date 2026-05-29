@@ -9,7 +9,7 @@ export const getJobs =async(req, res)=>{
 
     try {
         
-        const jobs = await Job.find({visible:ture})
+        const jobs = await Job.find({visible:true})
         .populate({path:'companyId', select:'-password'})
 
         res.json({success:true, jobs})

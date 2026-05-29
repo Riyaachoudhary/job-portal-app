@@ -1,29 +1,64 @@
 import Job from "../models/Job.js"
-import JobApplication from "../models/jobApplication.js"
+import JobApplication from "../models/JobApplication.js"
 import User from "../models/User.js"
 import {v2 as cloudinary} from 'cloudinary'
+import { getAuth } from "@clerk/express";
 
 
 //get user data
-export const getUserData= async (req, res)=>{
+// export const getUserData= async (req, res)=>{
 
-    const userId = req.auth.userId
+//     const userId = req.auth.userId
 
+
+//     try {
+        
+//         const user = await User.findById(userId)
+
+//         if (!user) {
+//             return res.json({success: false, message: 'User Not Found'})
+//         }
+
+//         res.json({success:true, user})
+
+//     } catch (error) {
+//         res.json({success:false, message: error.message})
+//     }
+// }
+
+
+
+
+export const getUserData = async (req, res) => {
+
+    const userId = getAuth(req).userId
 
     try {
-        
-        const user = await User.findById(userId)
+
+        let user = await User.findById(userId)
 
         if (!user) {
-            return res.json({success: false, message: 'User Not Found'})
+
+            user = await User.create({
+                _id: userId,
+                name: "New User",
+                email: "test@test.com",
+                image: "https://via.placeholder.com/150",
+                resume: ""
+            })
+
+            return res.json({ success: true, user })
         }
 
-        res.json({success:true, user})
+        res.json({ success: true, user })
 
     } catch (error) {
-        res.json({success:false, message: error.message})
+        res.json({ success: false, message: error.message })
     }
 }
+
+
+
 
 
 //apply for job
@@ -31,7 +66,7 @@ export const applyForJob = async(req, res)=>{
 
     const {jobId} = req.body
 
-    const userId = res.auth.userId
+    const userId = getAuth(req).userId
 
     try {
 
@@ -67,7 +102,7 @@ export const getUserJobApplications = async(req, res)=>{
 
     try {
 
-        const userId = req.auth.userId
+        const userId = getAuth(req).userId
 
         const applications = await JobApplication.find({userId})
         .populate('companyId', 'name email image')
@@ -75,7 +110,7 @@ export const getUserJobApplications = async(req, res)=>{
         .exec()
 
         if (!applications) {
-            return res.json({success:false.valueOf, message: 'No job applications found for this user.'})
+            return res.json({success:false, message: 'No job applications found for this user.'})
         }
 
         return res.json({success: true, applications})
@@ -91,9 +126,9 @@ export const updateUserResume = async( req, res)=>{
       
     try {
         
-        const userId = req.auth.userId
+        const userId = getAuth(req).userId
 
-        const resumeFile = req.resumeFile
+        const resumeFile = req.file
 
         const userData = await User.findById(userId)
 

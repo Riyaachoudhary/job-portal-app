@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Company from "./Company.js";
+// import Company from "./Company.js";
 
 const jobSchema = new mongoose.Schema({
     title:{type:String, required:true},
@@ -14,6 +14,9 @@ const jobSchema = new mongoose.Schema({
 })
 
 
-const Job=  mongoose.model('Job', jobSchema)
+// const Job=  mongoose.model('Job', jobSchema)
+const Job =
+  mongoose.models.Job || mongoose.model("Job", jobSchema);
+
 
 export default Job;
