@@ -5,8 +5,6 @@ import { protectCompany } from '../middleware/authMiddleware.js'
 import Company from "../models/Company.js";
 
 
-
-
 const router = express.Router()
 
 //register a company

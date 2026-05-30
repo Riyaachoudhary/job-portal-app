@@ -44,6 +44,8 @@ const ApplyJob = () => {
 
   }
 
+ 
+
   const applyHandler = async()=>{
     try {
 

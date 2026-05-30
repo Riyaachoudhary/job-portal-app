@@ -13,6 +13,10 @@ export const  registerCompany = async (req, res)=>{
 
     const imageFile =req.file;
 
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
+
 
     try {
         
@@ -30,13 +34,14 @@ export const  registerCompany = async (req, res)=>{
         const salt = await bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(password, salt)
 
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path)
+        // const imageUpload = await cloudinary.uploader.upload(imageFile.path)
 
         const company= await Company.create({
             name,
             email,
             password:hashPassword,
-            image: imageUpload.secure_url
+            // image: imageUpload.secure_url
+            image: "test-image"
         })
 
         res.json({
@@ -52,9 +57,19 @@ export const  registerCompany = async (req, res)=>{
 
         })
 
-    } catch (error) {
-        res.json({success: false, message: error.message})
-    }
+    } 
+    // catch (error) {
+    //     res.json({success: false, message: error.message})
+    // }
+    catch (error) {
+
+    console.log("REGISTER ERROR:", error);
+
+    res.json({
+        success:false,
+        message:error.message
+    })
+}
 }
 
 

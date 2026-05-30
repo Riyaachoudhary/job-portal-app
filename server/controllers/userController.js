@@ -6,54 +6,23 @@ import { getAuth } from "@clerk/express";
 
 
 //get user data
-// export const getUserData= async (req, res)=>{
+export const getUserData= async (req, res)=>{
 
-//     const userId = req.auth.userId
+    const { userId } = getAuth(req);
 
-
-//     try {
-        
-//         const user = await User.findById(userId)
-
-//         if (!user) {
-//             return res.json({success: false, message: 'User Not Found'})
-//         }
-
-//         res.json({success:true, user})
-
-//     } catch (error) {
-//         res.json({success:false, message: error.message})
-//     }
-// }
-
-
-
-
-export const getUserData = async (req, res) => {
-
-    const userId = getAuth(req).userId
 
     try {
-
-        let user = await User.findById(userId)
+        
+        const user = await User.findById(userId)
 
         if (!user) {
-
-            user = await User.create({
-                _id: userId,
-                name: "New User",
-                email: "test@test.com",
-                image: "https://via.placeholder.com/150",
-                resume: ""
-            })
-
-            return res.json({ success: true, user })
+            return res.json({success: false, message: 'User Not Found'})
         }
 
-        res.json({ success: true, user })
+        res.json({success:true, user})
 
     } catch (error) {
-        res.json({ success: false, message: error.message })
+        res.json({success:false, message: error.message})
     }
 }
 
@@ -66,7 +35,7 @@ export const applyForJob = async(req, res)=>{
 
     const {jobId} = req.body
 
-    const userId = getAuth(req).userId
+    const { userId } = getAuth(req);
 
     try {
 
@@ -102,8 +71,7 @@ export const getUserJobApplications = async(req, res)=>{
 
     try {
 
-        const userId = getAuth(req).userId
-
+        const { userId } = getAuth(req);
         const applications = await JobApplication.find({userId})
         .populate('companyId', 'name email image')
         .populate('jobId', 'title description location category level salary')
@@ -126,7 +94,7 @@ export const updateUserResume = async( req, res)=>{
       
     try {
         
-        const userId = getAuth(req).userId
+         const { userId } = getAuth(req);
 
         const resumeFile = req.file
 
